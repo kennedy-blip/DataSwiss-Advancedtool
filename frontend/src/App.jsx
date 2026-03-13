@@ -7,7 +7,11 @@ const App = () => {
   const [data, setData] = useState([]);
   const [insight, setInsight] = useState("");
   const [loading, setLoading] = useState(false);
-  const api = "http://localhost:8000/api";
+
+  // DYNAMIC URL: Uses your Render backend in production, localhost in development
+  const API_BASE = window.location.hostname === 'localhost' 
+    ? "http://localhost:8000/api" 
+    : "https://dataswiss-advancedtool.onrender.com/api";
 
   const onUpload = async (e) => {
     const file = e.target.files[0];
@@ -16,11 +20,12 @@ const App = () => {
     formData.append('file', file);
     setLoading(true);
     try {
-      const res = await axios.post(`${api}/upload`, formData);
+      const res = await axios.post(`${API_BASE}/upload`, formData);
       setData(res.data.data);
       setInsight("");
     } catch (err) { 
-      alert(err.response?.data?.detail || "Upload failed. Ensure backend is running."); 
+      const msg = err.response?.data?.detail || "Upload failed. Check if Backend is awake.";
+      alert(msg); 
     }
     setLoading(false);
   };
@@ -28,7 +33,7 @@ const App = () => {
   const onTransform = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`${api}/transform`, data);
+      const res = await axios.post(`${API_BASE}/transform`, data);
       setData(res.data.data);
     } catch (err) { console.error("Transform error", err); }
     setLoading(false);
@@ -37,15 +42,15 @@ const App = () => {
   const onAI = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`${api}/ai-insight`, data);
+      const res = await axios.post(`${API_BASE}/ai-insight`, data);
       setInsight(res.data.insight);
-    } catch (err) { setInsight("AI Connection error."); }
+    } catch (err) { setInsight("AI Connection error. Is the Groq Key set on Render?"); }
     setLoading(false);
   };
 
   const onDownload = async () => {
     try {
-      const res = await axios.post(`${api}/export`, data, { responseType: 'blob' });
+      const res = await axios.post(`${API_BASE}/export`, data, { responseType: 'blob' });
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -114,17 +119,17 @@ const App = () => {
 
 const styles = {
   container: { background: '#020617', color: '#f8fafc', minHeight: '100vh', padding: '2.5rem', fontFamily: 'Inter, system-ui, sans-serif' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '20px' },
   logo: { display: 'flex', alignItems: 'center', gap: '15px' },
-  actions: { display: 'flex', gap: '12px' },
-  uploadBtn: { background: '#1e293b', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', display: 'flex', gap: '10px', fontWeight: '600', border: '1px solid #334155', transition: '0.3s' },
-  btn: { border: 'none', background: '#646cff', color: 'white', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600', transition: '0.3s' },
-  aiCard: { background: '#1e1b4b', border: '1px solid #4338ca', padding: '1.8rem', borderRadius: '18px', marginBottom: '2.5rem', display: 'flex', gap: '20px', alignItems: 'flex-start', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' },
-  card: { background: '#0f172a', border: '1px solid #1e293b', borderRadius: '20px', padding: '1.5rem', position: 'relative' },
-  tableScroll: { overflowX: 'auto', borderRadius: '10px' },
+  actions: { display: 'flex', gap: '12px', flexWrap: 'wrap' },
+  uploadBtn: { background: '#1e293b', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', display: 'flex', gap: '10px', fontWeight: '600', border: '1px solid #334155' },
+  btn: { border: 'none', background: '#646cff', color: 'white', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' },
+  aiCard: { background: '#1e1b4b', border: '1px solid #4338ca', padding: '1.8rem', borderRadius: '18px', marginBottom: '2.5rem', display: 'flex', gap: '20px', alignItems: 'flex-start' },
+  card: { background: '#0f172a', border: '1px solid #1e293b', borderRadius: '20px', padding: '1.5rem' },
+  tableScroll: { overflowX: 'auto' },
   table: { width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '14px' },
   empty: { padding: '8rem', textAlign: 'center', color: '#475569', display: 'flex', flexDirection: 'column', alignItems: 'center' },
-  loader: { position: 'fixed', bottom: '30px', right: '30px', background: '#646cff', padding: '12px 24px', borderRadius: '50px', display: 'flex', gap: '12px', alignItems: 'center', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(0,0,0,0.4)' }
+  loader: { position: 'fixed', bottom: '30px', right: '30px', background: '#646cff', padding: '12px 24px', borderRadius: '50px', display: 'flex', gap: '12px', alignItems: 'center', fontWeight: 'bold' }
 };
 
 export default App;
