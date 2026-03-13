@@ -1,0 +1,25 @@
+# Secrets & Environment
+.env
+.env.local
+.venv
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+backend/data/*.csv
+backend/data/*.xlsx
+backend/data/*.json
+
+# Node / React
+node_modules/
+frontend/dist/
+frontend/build/
+.eslintcache
+
+# OS Files
+.DS_Store
+Thumbs.db

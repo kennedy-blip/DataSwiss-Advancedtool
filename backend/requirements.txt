@@ -1,0 +1,8 @@
+fastapi[all]        # Web framework
+uvicorn             # Server to run FastAPI
+polars              # High-performance data manipulation
+groq                # AI integration for "Elite" insights
+pydantic            # Data validation
+python-multipart    # To handle file uploads (CSVs/Excel)
+httpx               # For gathering data from external APIs
+python-dotenv       # To hide your API keys

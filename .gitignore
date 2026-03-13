@@ -1,0 +1,13 @@
+# Data and Secrets
+backend/data/*.csv
+backend/data/*.json
+.env
+
+# Python
+__pycache__/
+venv/
+*.pyc
+
+# Node
+node_modules/
+dist/
